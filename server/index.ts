@@ -10,6 +10,8 @@ import {
 import handleValidationErrors from "./utils/handleValidationErrors";
 import checkAuth from "./utils/checkAuth";
 
+///cors error!!!!!!!!!!!!!!!!!!!!
+
 const app = express();
 mongoose
   .connect(
@@ -21,7 +23,7 @@ mongoose
   });
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
 app.get("/", (res, req) => req.status(200).send("server work"));
 

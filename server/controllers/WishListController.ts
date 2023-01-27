@@ -22,7 +22,9 @@ export const createWish = async (req, res) => {
 
 export const listWish = async (req, res) => {
   try {
-    const wishList = await WishListModel.find().populate('user').exec();
+    const wishList = await WishListModel.find({ user: req.userId })
+      .populate("user")
+      .exec();
     res.status(200).json(wishList);
   } catch (err) {
     console.log(err);

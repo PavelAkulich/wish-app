@@ -1,3 +1,9 @@
 @tailwind base;
+@layer base {
+  html {
+    @apply text-default-font;
+  } 
+}
+
 @tailwind components;
 @tailwind utilities;

@@ -7,7 +7,7 @@ import { store } from "@/store/store";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <div className="w-screen h-screen">
         <Head>
           <title>Wish APP</title>
@@ -15,12 +15,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <AuthLayout isLogged={true}>
-          <main className="">
+        <AuthLayout isLogged={false}>
+          <main className="w-full h-full bg-default-dark">
             <Component {...pageProps} />
           </main>
         </AuthLayout>
       </div>
-    // </Provider>
+    </Provider>
   );
 }
