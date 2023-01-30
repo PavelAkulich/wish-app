@@ -3,14 +3,13 @@ import { IUserCred, IUserResponse, IUserRequest } from "../../../../types/UserTy
 import { setErrorMessage } from "../../../../store/slices/errorSlice";
 
 const baseApiUrl = "/auth";
-
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl:
       process.env.NODE_ENV === "production"
-        ? `${process.env.REACT_APP_BASE_URL}/`
-        : `${process.env.REACT_APP_BASE_URL_DEV}/`
+        ? `${process.env.NEXT_PUBLIC_BASE_URL}/`
+        : `${process.env.NEXT_PUBLIC_BASE_URL_DEV}/`
   }),
   endpoints: (builder) => ({
     loginUser: builder.mutation<IUserResponse, IUserCred>({
@@ -18,7 +17,6 @@ export const authApi = createApi({
         url: `${baseApiUrl}/login`,
         method: "POST",
         body: data,
-        credentials: "include",
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
@@ -33,7 +31,6 @@ export const authApi = createApi({
         url: `${baseApiUrl}/register`,
         method: "POST",
         body: data,
-        credentials: "include",
       }),
       async onQueryStarted(args, { dispatch, queryFulfilled }) {
         try {
@@ -46,4 +43,4 @@ export const authApi = createApi({
   }),
 });
 
-export const { useLoginUserMutation } = authApi;
+export const { useLoginUserMutation, useRegisterUserMutation } = authApi;

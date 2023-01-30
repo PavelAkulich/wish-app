@@ -29,7 +29,7 @@ export const baseQueryWithReauth: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     const state = api.getState() as RootState;
-    api.dispatch(setToken({ token: null }));
+    api.dispatch(setToken(null));
     // const refreshResult = await baseQuery(
     //   {
     //     url:

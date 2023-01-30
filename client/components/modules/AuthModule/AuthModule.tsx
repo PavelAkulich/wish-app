@@ -1,5 +1,6 @@
 import { TabPanelTemplate, TabTemplate, TabsListTemplate, TabsTemplate } from "@/components/UI/TabTemplate";
 import LoginForm from "./components/LoginForm/LoginForm";
+import RegisterForm from "./components/RegisterForm/RegisterForm";
 
 function AuthModule() {
   return <div className="h-full">
@@ -8,7 +9,7 @@ function AuthModule() {
         <LoginForm />
       </TabPanelTemplate>
       <TabPanelTemplate value={1}>
-        <div>fafwaf</div>
+        <RegisterForm />
       </TabPanelTemplate>
       <TabsListTemplate>
         <TabTemplate value={0}>Войти</TabTemplate>

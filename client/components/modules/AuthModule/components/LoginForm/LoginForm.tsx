@@ -1,10 +1,13 @@
+import DefaultFormInput from "@/components/components/DefaultFormInput";
 import ButtonTemplate from "@/components/UI/ButtonTemplate";
 import InputTemplate from "@/components/UI/InputTemplate";
+import { setToken } from "@/store/slices/errorSlice";
 import { useAppDispatch } from "@/store/store";
 import { useFormik } from "formik";
 import { useLoginUserMutation } from "../../store/userService";
 import { setUser } from "../../store/userSlice";
 import { validationSchemaLogin } from "./../../utils/validator";
+import { loginFormInput } from "./loginForm.constants";
 
 function LoginForm() {
   const [login, loginData] = useLoginUserMutation();
@@ -16,17 +19,13 @@ function LoginForm() {
     },
     validationSchema: validationSchemaLogin,
     onSubmit: async (values) => {
-      const data = await login(values);
-      // dispatch(
-      //   setUser({
-      //     _id: data._id,
-      //     fullName: data.fullName,
-      //     email: data.email,
-      //     avatarUrl: data.avatarUrl,
-      //     description: data.description,
-      //   })
-      // );
-      console.log(data);
+      await login(values)
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+          dispatch(setUser(res));
+          dispatch(setToken(res.token));
+        });
     },
   });
   return (
@@ -34,7 +33,24 @@ function LoginForm() {
       <div>Login</div>
       <form onSubmit={formik.handleSubmit}>
         <div>
-          <div className="py-2">
+          {loginFormInput.map((item) => (
+            <DefaultFormInput
+              key={item.name}
+              labelText={item.label}
+              type={item.type}
+              name={item.name}
+              errorText={
+                formik.errors[item.name as keyof typeof formik.values] &&
+                formik.touched[item.name as keyof typeof formik.values]
+                  ? `${formik.errors[item.name as keyof typeof formik.values]}`
+                  : ""
+              }
+              value={formik.values[item.name as keyof typeof formik.values]}
+              handleChange={formik.handleChange}
+              handleBlur={formik.handleBlur}
+            />
+          ))}
+          {/* <div className="py-2">
             <label htmlFor="email">E-mail</label>
             <InputTemplate
               name="email"
@@ -64,7 +80,7 @@ function LoginForm() {
                 ? `${formik.errors.password}`
                 : ""}
             </div>
-          </div>
+          </div> */}
         </div>
         <div>
           <ButtonTemplate type="submit">Войти</ButtonTemplate>

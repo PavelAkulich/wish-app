@@ -5,7 +5,7 @@ type ErrorState = {
   token?: string | null;
   isError?: boolean;
   anyErrorMessage?: string;
-}
+};
 
 const initialState: ErrorState = {
   isError: false,
@@ -15,18 +15,17 @@ const initialState: ErrorState = {
 
 export const erororSlice = createSlice({
   initialState,
-  name: "userSlice",
+  name: "error",
   reducers: {
     setErrorMessage: (state, action: PayloadAction<any>) => {
       state.anyErrorMessage = getErrorMessage(action.payload);
     },
-    setToken: (state, action: PayloadAction<{ token: string | null }>) => {
-      state.token = action.payload.token;
+    setToken: (state, action: PayloadAction<string | null>) => {
+      state.token = action.payload;
     },
   },
 });
 
 export default erororSlice.reducer;
 
-export const { setErrorMessage, setToken } =
-erororSlice.actions;
+export const { setErrorMessage, setToken } = erororSlice.actions;

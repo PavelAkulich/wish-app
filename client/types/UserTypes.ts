@@ -1,5 +1,9 @@
 export interface IUser {
   username: string;
+  userAvatar?: string;
+  email: string;
+  userId: string;
+  userDescription?: string; 
 }
 
 export interface IUserCred {

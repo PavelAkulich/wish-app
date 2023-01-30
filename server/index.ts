@@ -23,7 +23,7 @@ mongoose
   });
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
 app.get("/", (res, req) => req.status(200).send("server work"));
 
