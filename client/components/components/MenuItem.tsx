@@ -17,8 +17,8 @@ const MenuItem: FC<MenuItemProps> = ({ label, url, icon }) => {
           href={url}
           className={`flex gap-4 p-2 py-4 transition-all border-l-4 border-solid border-transparent ${
             pathname.includes(url)
-              ? "border-default-font"
-              : "hover:bg-default-dark hover:border-default-font"
+              ? "border-default-fontLight"
+              : "hover:bg-default-gradientDark hover:border-default-fontLight"
           } `}
         >
           <div>{icon}</div>

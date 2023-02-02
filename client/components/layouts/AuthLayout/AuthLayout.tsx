@@ -9,13 +9,13 @@ type AuthLayoutProps = {
 };
 
 const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
-  const isLogged = useAppSelector((store) => store.errorSlice.token);
+  // const isLogged = useAppSelector((store) => store.errorSlice.token);
   const router = useRouter();
-  useEffect(() => {
-    if (!isLogged) router.replace("/authorization");
-  }, [isLogged]);
+  // useEffect(() => {
+  //   if (!isLogged) router.replace("/authorization");
+  // }, [isLogged]);
   return !(router.pathname === '/authorization') ? (
-    <div className="w-full h-full flex">
+    <div className="w-full h-full flex bg-default-grey">
       <AsideModule />
       <div className="w-[calc(100%-200px)]">
         <HeaderModule />

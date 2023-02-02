@@ -1,11 +1,19 @@
-import type { AppProps } from "next/app";
+import App, { AppProps } from "next/app";
 import Head from "next/head";
 import AuthLayout from "@/components/layouts/AuthLayout/AuthLayout";
 import "@/styles/globals.css";
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
+import { wrapper } from "@/store/store";
+import { parseCookies } from "nookies";
+import { setUser } from "@/components/modules/AuthModule/store/userSlice";
+import { setToken } from "@/store/slices/errorSlice";
+import { Api } from "@/api/defaultApi";
 
-export default function App({ Component, pageProps }: AppProps) {
+const MyApp = ({ Component, ...rest }: Omit<AppProps, "pageProps">) => {
+  console.log("rest: ", rest);
+  const { store, props } = wrapper.useWrappedStore(rest);
+  console.log("props: ", props);
+  console.log("store: ", store);
   return (
     <Provider store={store}>
       <div className="w-screen h-screen">
@@ -17,10 +25,54 @@ export default function App({ Component, pageProps }: AppProps) {
         </Head>
         <AuthLayout>
           <main className="w-full h-full bg-default-dark">
-            <Component {...pageProps} />
+            <Component {...props.pageProps} />
           </main>
         </AuthLayout>
       </div>
     </Provider>
   );
-}
+};
+
+MyApp.getInitialProps = wrapper.getInitialAppProps(
+  (store) =>
+    async (appCtx): Promise<any> => {
+      const { Component, ctx } = appCtx;
+      const { wishToken } = parseCookies(ctx);
+      const childrenGip = await App.getInitialProps(appCtx);
+      console.log("childrenGip : ", childrenGip);
+      if (ctx.pathname !== "/authorization") {
+        try {
+          const data = await Api(ctx).user.getMe();
+          store.dispatch(
+            setUser({
+              fullName: data.fullName,
+              email: data.email,
+              _id: data._id,
+            })
+          );
+          store.dispatch(setToken(wishToken));
+          console.log("after try");
+          return {
+            pageProps: {
+              ...childrenGip.pageProps,
+              store,
+            },
+          };
+        } catch (err) {
+          console.log(err);
+          ctx?.res?.writeHead(301, {
+            Location: "/authorization",
+          });
+          ctx?.res?.end();
+          return {
+            pageProps: {
+              ...childrenGip.pageProps,
+              store,
+            },
+          };
+        }
+      }
+    }
+);
+
+export default MyApp;

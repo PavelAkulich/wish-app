@@ -1,16 +1,15 @@
 import ButtonTemplate from "@/components/UI/ButtonTemplate";
-import InputTemplate from "@/components/UI/InputTemplate";
 import { setToken } from "@/store/slices/errorSlice";
 import { useAppDispatch } from "@/store/store";
 import { useFormik } from "formik";
-import { useRegisterUserMutation } from "../../store/userService";
 import { setUser } from "../../store/userSlice";
 import { validationSchemaRegister } from "./../../utils/validator";
 import { registerFormInput } from "./registerForm.constants";
-import DefaultFormInput from '@/components/components/DefaultFormInput';
+import DefaultFormInput from "@/components/components/DefaultFormInput";
+import { Api } from "@/api/defaultApi";
+import { setCookie } from "nookies";
 
 function RegisterForm() {
-  const [register, registerData] = useRegisterUserMutation();
   const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
@@ -22,13 +21,13 @@ function RegisterForm() {
     },
     validationSchema: validationSchemaRegister,
     onSubmit: async (values) => {
-      await register(values)
-        .unwrap()
-        .then((res) => {
-          console.log(res);
-          dispatch(setUser(res));
-          dispatch(setToken(res.token));
-        });
+      const res = await Api().user.registerUser(values);
+      dispatch(setUser(res));
+      dispatch(setToken(res.token));
+      setCookie(null, "wishToken", res.token ? res.token.toString() : "", {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
+      });
     },
   });
   return (

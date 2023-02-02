@@ -11,8 +11,8 @@ import { setToken } from "../../slices/errorSlice";
 const baseQuery = fetchBaseQuery({
   baseUrl:
     process.env.NODE_ENV === "production"
-      ? `${process.env.REACT_APP_BASE_URL}/`
-      : "/",
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/`
+      : `${process.env.NEXT_PUBLIC_BASE_URL_DEV}/`,
   prepareHeaders: (headers, api) => {
     const store = api.getState() as RootState;
     if (store?.errorSlice.token)

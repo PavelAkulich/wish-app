@@ -38,7 +38,7 @@ function TooltipTemplate({
         className={`z-20 ${classNameTooltip}`}
       >
         <div
-          className={`box-border text-white shadow-md bg-default-darkest rounded z-20 py-1 px-3 m-1 text-[10px] ${classNameTooltip}`}
+          className={`box-border text-white shadow-md bg-default-gradientDark rounded z-20 py-1 px-3 m-1 text-[10px] ${classNameTooltip}`}
         >
           {text}
         </div>

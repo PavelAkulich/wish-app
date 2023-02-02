@@ -1,16 +1,15 @@
 import DefaultFormInput from "@/components/components/DefaultFormInput";
 import ButtonTemplate from "@/components/UI/ButtonTemplate";
-import InputTemplate from "@/components/UI/InputTemplate";
 import { setToken } from "@/store/slices/errorSlice";
 import { useAppDispatch } from "@/store/store";
 import { useFormik } from "formik";
-import { useLoginUserMutation } from "../../store/userService";
+import { setCookie } from "nookies";
 import { setUser } from "../../store/userSlice";
 import { validationSchemaLogin } from "./../../utils/validator";
 import { loginFormInput } from "./loginForm.constants";
+import { Api } from "@/api/defaultApi";
 
 function LoginForm() {
-  const [login, loginData] = useLoginUserMutation();
   const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
@@ -19,13 +18,13 @@ function LoginForm() {
     },
     validationSchema: validationSchemaLogin,
     onSubmit: async (values) => {
-      await login(values)
-        .unwrap()
-        .then((res) => {
-          console.log(res);
-          dispatch(setUser(res));
-          dispatch(setToken(res.token));
-        });
+      const res = await Api().user.loginUser(values);
+      dispatch(setUser(res));
+      dispatch(setToken(res.token));
+      setCookie(null, "wishToken", res.token ? res.token.toString() : "", {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
+      });
     },
   });
   return (

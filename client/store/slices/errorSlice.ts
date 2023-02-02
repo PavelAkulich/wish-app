@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 import { getErrorMessage } from "./../../utils/utils";
 
 type ErrorState = {
@@ -22,6 +23,15 @@ export const erororSlice = createSlice({
     },
     setToken: (state, action: PayloadAction<string | null>) => {
       state.token = action.payload;
+    },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      console.log(action);
+      return {
+        ...state,
+        token: action.payload.errorSlice.token,
+      };
     },
   },
 });
