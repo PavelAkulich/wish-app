@@ -4,9 +4,10 @@ import { wrapper } from "@/store/store";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
 import { Api } from "@/api/defaultApi";
+import { IWishResponse } from '@/types/WishListTypes';
 
 type WishList = {
-  wishList: any;
+  wishList: IWishResponse[];
 };
 const WishList: FC<WishList> = ({ wishList }) => {
   return <WishListModule wishList={wishList} />;
@@ -16,8 +17,7 @@ export default WishList;
 
 export const getServerSideProps: GetServerSideProps = async (cxt) => {
   try {
-    const { wishToken } = parseCookies(cxt);
-    const data = await Api(cxt).wish.getWishList(wishToken);
+    const data = await Api(cxt).wish.getWishList();
     return {
       props: { wishList: data },
     };

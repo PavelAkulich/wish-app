@@ -27,3 +27,10 @@ export interface IUserRequest {
   description?: string;
   password: string
 }
+
+export interface IUserCommonInfo {
+  fullName: string;
+  email: string;
+  avatarUrl?: string;
+  description?: string;
+}

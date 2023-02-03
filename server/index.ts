@@ -43,6 +43,7 @@ app.get("/auth/me", checkAuth, UserController.getMe);
 
 app.get("/wishList", checkAuth, WishListController.listWish);
 app.post("/wishList", checkAuth, WishListController.createWish);
+app.get("/wishList/:id", checkAuth, WishListController.wishItem);
 
 app.listen(5555, () => {
   console.log("work!!!");

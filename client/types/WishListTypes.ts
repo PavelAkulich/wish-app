@@ -1,4 +1,4 @@
-import { IUser } from "./UserTypes";
+import { IUser, IUserCommonInfo } from "./UserTypes";
 
 export interface IWishItem {
   _id: string;
@@ -9,9 +9,16 @@ export interface IWishItem {
 }
 
 export interface IWishResponse {
-  _id: string | null;
-  name: string | null;
-  avatarUrl: string | null;
-  description: string | null;
-  user: any;
+  _id: string;
+  name: string;
+  avatarUrl?: string | null;
+  description?: string | null;
+  user: IUserCommonInfo;
+}
+
+
+export interface IWishRequest {
+  name: string,
+  avatarUrl?: string,
+  description?: string,
 }

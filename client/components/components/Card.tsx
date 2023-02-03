@@ -12,7 +12,7 @@ const Card: FC<CardProps> = ({ title, description, avatar }) => {
   return (
     <DefaultContainer
       classNameOuterContainer="text-default w-full"
-      classNameInnerContainer="h-full bg-default-bg border border-solid border-default rounded-2xl"
+      classNameInnerContainer="h-full bg-default-bg border border-solid border-default"
     >
       <div>{title}</div>
       {avatar && <div>{avatar}</div>}

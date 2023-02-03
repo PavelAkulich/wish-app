@@ -1,6 +1,8 @@
+import { Request, Response } from "express";
 import WishListModel from "../models/WishListModel";
 
-export const createWish = async (req, res) => {
+type WishRquest = Request & { userId: string };
+export const createWish = async (req: WishRquest, res: Response) => {
   try {
     const newWish = new WishListModel({
       user: req.userId,
@@ -8,10 +10,11 @@ export const createWish = async (req, res) => {
       avatarUrl: req.body.avatarUrl,
       description: req.body.description,
     });
-    await newWish.save();
-    res.status(201).json({
-      message: "Создано",
-    });
+    const { _doc } = await newWish.save();
+    const wishItem = await WishListModel.findOne({ _id: _doc._id })
+      .populate("user", ["fullName", "email", "avatarUrl", "description"])
+      .exec();
+    res.status(201).json(wishItem);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -20,12 +23,26 @@ export const createWish = async (req, res) => {
   }
 };
 
-export const listWish = async (req, res) => {
+export const listWish = async (req: WishRquest, res: Response) => {
   try {
     const wishList = await WishListModel.find({ user: req.userId })
-      .populate("user")
+      .populate("user", ["fullName", "email", "avatarUrl", "description"])
       .exec();
     res.status(200).json(wishList);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось загрузить",
+    });
+  }
+};
+
+export const wishItem = async (req: WishRquest, res: Response) => {
+  try {
+    const wishItem = await WishListModel.findOne({ _id: req.params.id })
+      .populate("user", ["fullName", "email", "avatarUrl", "description"])
+      .exec();
+    res.status(200).json(wishItem);
   } catch (err) {
     console.log(err);
     res.status(500).json({
