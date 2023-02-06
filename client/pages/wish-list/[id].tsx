@@ -2,13 +2,13 @@ import { FC } from "react";
 import { GetServerSideProps } from "next";
 import { Api } from "@/api/defaultApi";
 import { IWishResponse } from "@/types/WishListTypes";
+import WishItemModule from '@/components/modules/WishItemModule/WishItemModule';
 
 type WishItemDetailProps = {
   wishItem: IWishResponse;
 };
 const WishItemDetail: FC<WishItemDetailProps> = ({ wishItem }) => {
-  console.log(wishItem);
-  return <div>WishItemDetail</div>;
+  return <WishItemModule wishItem={wishItem}/>;
 };
 
 export default WishItemDetail;

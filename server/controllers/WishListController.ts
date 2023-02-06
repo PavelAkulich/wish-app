@@ -39,10 +39,34 @@ export const listWish = async (req: WishRquest, res: Response) => {
 
 export const wishItem = async (req: WishRquest, res: Response) => {
   try {
-    const wishItem = await WishListModel.findOne({ _id: req.params.id })
+    const wishItem = await WishListModel.findOne({ _id: req.params.id, user: req.userId })
       .populate("user", ["fullName", "email", "avatarUrl", "description"])
       .exec();
-    res.status(200).json(wishItem);
+    if (!wishItem) {
+      res.status(500).json({
+        message: "Нет записи или доступа к ней",
+      });
+    }
+    else res.status(200).json(wishItem);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось загрузить",
+    });
+  }
+};
+
+export const wishItemUpdate = async (req: WishRquest, res: Response) => {
+  try {
+    const wishItem = await WishListModel.findOne({ _id: req.params.id, user: req.userId })
+      .populate("user", ["fullName", "email", "avatarUrl", "description"])
+      .exec();
+    if (!wishItem) {
+      res.status(400).json({
+        message: "Нет записи или доступа к ней",
+      });
+    }
+    else res.status(200).json(wishItem);
   } catch (err) {
     console.log(err);
     res.status(500).json({

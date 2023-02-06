@@ -34,6 +34,7 @@ export const register = async (req, res) => {
       ...userData,
       token,
     });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({
