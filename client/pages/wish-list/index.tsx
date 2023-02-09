@@ -4,13 +4,18 @@ import { wrapper } from "@/store/store";
 import { GetServerSideProps } from "next";
 import { parseCookies } from "nookies";
 import { Api } from "@/api/defaultApi";
-import { IWishResponse } from '@/types/WishListTypes';
+import { IWishResponse } from "@/types/WishListTypes";
+import HeadLayout from "@/components/layouts/HeadLayout/HeadLayout";
 
 type WishList = {
   wishList: IWishResponse[];
 };
 const WishList: FC<WishList> = ({ wishList }) => {
-  return <WishListModule wishList={wishList} />;
+  return (
+    <HeadLayout description="list of wish item (basic CRUD page)">
+      <WishListModule wishList={wishList} />
+    </HeadLayout>
+  );
 };
 
 export default WishList;

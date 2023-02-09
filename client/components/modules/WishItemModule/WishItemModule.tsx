@@ -2,12 +2,31 @@ import { FC } from "react";
 import { IWishResponse } from "@/types/WishListTypes";
 import DefaultContainer from "@/components/UI/DefaultContainer";
 import ButtonTemplate from "@/components/UI/ButtonTemplate";
+import { useRouter } from 'next/router';
+import { Api } from "@/api/defaultApi";
 
 type WishItemModuleProps = {
   wishItem: IWishResponse;
 };
 
 const WishItemModule: FC<WishItemModuleProps> = ({ wishItem }) => {
+  const router = useRouter();
+
+  const editItem = () => {
+    router.push(`${wishItem._id}/edit`)
+  }
+
+  const deleteItem = async () => {
+    try {
+      await Api().wish.deleteWishItem(wishItem._id);
+    } catch (err) {
+      console.log(err);
+    }
+    finally {
+      router.push(`/wish-list`)
+    }
+  }
+
   return (
     <div className="h-full">
       <DefaultContainer
@@ -22,8 +41,8 @@ const WishItemModule: FC<WishItemModuleProps> = ({ wishItem }) => {
         <div className="flex px-10 justify-between items-center">
           <div>{`Владелец: ${wishItem.user.fullName}`}</div>
           <div className="flex gap-10 justify-between">
-            <ButtonTemplate>Редактировать</ButtonTemplate>
-            <ButtonTemplate>Удалить</ButtonTemplate>
+            <ButtonTemplate onClick={editItem}>Редактировать</ButtonTemplate>
+            <ButtonTemplate onClick={deleteItem}>Удалить</ButtonTemplate>
           </div>
         </div>
       </DefaultContainer>

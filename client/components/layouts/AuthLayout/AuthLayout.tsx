@@ -1,19 +1,14 @@
 import AsideModule from "@/components/modules/AsideModule/AsideModule";
 import HeaderModule from "@/components/modules/HeaderModule/HeaderModule";
-import { useAppSelector } from "@/store/store";
 import { useRouter } from "next/router";
-import { FC, ReactNode, useEffect } from "react";
+import { FC, ReactNode } from "react";
 
 type AuthLayoutProps = {
   children: ReactNode;
 };
 
 const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
-  // const isLogged = useAppSelector((store) => store.errorSlice.token);
   const router = useRouter();
-  // useEffect(() => {
-  //   if (!isLogged) router.replace("/authorization");
-  // }, [isLogged]);
   return !(router.pathname === '/authorization') ? (
     <div className="w-full h-full flex bg-default-grey">
       <AsideModule />

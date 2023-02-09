@@ -2,13 +2,21 @@ import { FC } from "react";
 import { GetServerSideProps } from "next";
 import { Api } from "@/api/defaultApi";
 import { IWishResponse } from "@/types/WishListTypes";
-import WishItemModule from '@/components/modules/WishItemModule/WishItemModule';
+import WishItemModule from "@/components/modules/WishItemModule/WishItemModule";
+import HeadLayout from "@/components/layouts/HeadLayout/HeadLayout";
 
 type WishItemDetailProps = {
   wishItem: IWishResponse;
 };
 const WishItemDetail: FC<WishItemDetailProps> = ({ wishItem }) => {
-  return <WishItemModule wishItem={wishItem}/>;
+  return (
+    <HeadLayout
+      title={wishItem.name}
+      description={wishItem?.description || `${wishItem.name} page`}
+    >
+      <WishItemModule wishItem={wishItem} />
+    </HeadLayout>
+  );
 };
 
 export default WishItemDetail;

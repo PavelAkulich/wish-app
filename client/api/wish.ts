@@ -18,4 +18,19 @@ export const WishListApi = (instance: AxiosInstance) => ({
     >("wishList", newWish);
     return data;
   },
+  async updateWishItem(updWish: IWishRequest, id: string) {
+    const { data } = await instance.patch<
+      { message: string },
+      AxiosResponse<{ message: string }>,
+      IWishRequest
+    >(`wishList/${id}`, updWish);
+    return data;
+  },
+  async deleteWishItem(id: string) {
+    const { data } = await instance.delete<
+      { message: string },
+      AxiosResponse<{ message: string }>
+    >(`wishList/${id}`);
+    return data;
+  },
 });

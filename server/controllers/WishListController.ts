@@ -39,15 +39,17 @@ export const listWish = async (req: WishRquest, res: Response) => {
 
 export const wishItem = async (req: WishRquest, res: Response) => {
   try {
-    const wishItem = await WishListModel.findOne({ _id: req.params.id, user: req.userId })
+    const wishItem = await WishListModel.findOne({
+      _id: req.params.id,
+      user: req.userId,
+    })
       .populate("user", ["fullName", "email", "avatarUrl", "description"])
       .exec();
     if (!wishItem) {
       res.status(500).json({
         message: "Нет записи или доступа к ней",
       });
-    }
-    else res.status(200).json(wishItem);
+    } else res.status(200).json(wishItem);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -58,19 +60,59 @@ export const wishItem = async (req: WishRquest, res: Response) => {
 
 export const wishItemUpdate = async (req: WishRquest, res: Response) => {
   try {
-    const wishItem = await WishListModel.findOne({ _id: req.params.id, user: req.userId })
-      .populate("user", ["fullName", "email", "avatarUrl", "description"])
-      .exec();
-    if (!wishItem) {
-      res.status(400).json({
-        message: "Нет записи или доступа к ней",
-      });
-    }
-    else res.status(200).json(wishItem);
+    const wishId = req.params.id;
+    await WishListModel.updateOne(
+      {
+        _id: wishId,
+      },
+      {
+        name: req.body.name,
+        avatarUrl: req.body.avatarUrl,
+        description: req.body.description,
+        user: req.userId,
+      }
+    );
+    res.status(200).json({
+      message: "Сохранено",
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: "Не удалось загрузить",
+      message: "Не удалось сохранить",
+    });
+  }
+};
+
+export const wishItemDelete = async (req: WishRquest, res: Response) => {
+  try {
+    const wishId = req.params.id;
+    WishListModel.findOneAndDelete(
+      {
+        _id: wishId,
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: "Не удалось удалить",
+          });
+        }
+
+        if (!doc) {
+          return res.status(404).json({
+            message: "Нет записи",
+          });
+        }
+
+        res.status(200).json({
+          message: "Удалено",
+        });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось удалить",
     });
   }
 };

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { validationSchemaWish } from "./../../utils/validator";
 import { useFormik } from "formik";
 import { Api } from "@/api/defaultApi";
-import { wishFormInput } from "./wishListModal.constants";
+import { wishFormInput } from "../../utils/wishListModal.constants";
 import DefaultFormInput from "@/components/components/DefaultFormInput";
 import { IWishResponse } from "@/types/WishListTypes";
 import DefaultButtonSection from "./../../../../components/DefaultButtonSection";
@@ -23,7 +23,6 @@ const WishListModal: FC<WishListModalProps> = ({
     },
     validationSchema: validationSchemaWish,
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const res = await Api().wish.createWishItem(values);
         successMethod(res);
