@@ -10,20 +10,28 @@ export const WishListApi = (instance: AxiosInstance) => ({
     const { data } = await instance.get<IWishResponse>("wishList/" + id);
     return data;
   },
-  async createWishItem(newWish: IWishRequest) {
+  async createWishItem(newWish: any) {
     const { data } = await instance.post<
       IWishResponse,
       AxiosResponse<IWishResponse>,
-      IWishRequest
-    >("wishList", newWish);
+      any
+    >("wishList", newWish, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   },
-  async updateWishItem(updWish: IWishRequest, id: string) {
+  async updateWishItem(updWish: any, id: string) {
     const { data } = await instance.patch<
       { message: string },
       AxiosResponse<{ message: string }>,
-      IWishRequest
-    >(`wishList/${id}`, updWish);
+      any
+    >(`wishList/${id}`, updWish, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return data;
   },
   async deleteWishItem(id: string) {

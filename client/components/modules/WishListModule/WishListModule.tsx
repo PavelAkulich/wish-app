@@ -1,8 +1,11 @@
+import { Api } from "@/api/defaultApi";
 import Card from "@/components/components/Card";
+import DefaultCardButtonSection from "@/components/components/DefaultCardButtonSection";
 import ButtonTemplate from "@/components/UI/ButtonTemplate";
 import ModalTemplate from "@/components/UI/ModalTemplate";
 import { IWishResponse } from "@/types/WishListTypes";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import WishListModal from "./components/WishListModal/WishListModal";
 
@@ -11,12 +14,25 @@ type WishListModuleProps = {
 };
 
 const WishListModule: FC<WishListModuleProps> = ({ wishList }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [wishListFront, setWishListFront] = useState<IWishResponse[]>(wishList);
 
   const handeleClose = () => setIsOpen(false);
   const handeleSuccess = (wishItem: IWishResponse) =>
     setWishListFront((prev) => [...prev, wishItem]);
+
+  const handleView = (id: string) => () => router.push(`/wish-list/${id}`);
+  const handleUpdate = (id: string) => () =>
+    router.push(`/wish-list/${id}/edit`);
+  const handleDelete = (id: string) => async () => {
+    try {
+      await Api().wish.deleteWishItem(id);
+      setWishListFront((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -26,16 +42,22 @@ const WishListModule: FC<WishListModuleProps> = ({ wishList }) => {
           Добавить
         </ButtonTemplate>
       </div>
-      <div className="h-[calc(100%-50px)] overflow-auto grid lg:grid-cols-4 xl:grid-cols-5 sm:grid-cols-2 auto-rows-min">
+      <div className="h-[calc(100%-50px)] overflow-auto grid lg:grid-cols-4 sm:grid-cols-2 auto-rows-min">
         {wishListFront.map((item) => (
-          <Link href={`/wish-list/${item._id}`}>
-            <Card
-              key={item._id}
-              title={item.name}
-              description={item.description ? item.description : ""}
-              avatar={item.avatarUrl ? item.avatarUrl : ""}
+          // <Link href={`/wish-list/${item._id}`}>
+          <Card
+            key={item._id}
+            title={item.name}
+            description={item.description ? item.description : ""}
+            avatar={item.avatarUrl ? item.avatarUrl : ""}
+          >
+            <DefaultCardButtonSection
+              handleView={handleView(item._id)}
+              handleUpdate={handleUpdate(item._id)}
+              handleDelete={handleDelete(item._id)}
             />
-          </Link>
+          </Card>
+          // </Link>
         ))}
       </div>
       <ModalTemplate open={isOpen} onClose={handeleClose}>

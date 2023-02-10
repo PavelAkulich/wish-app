@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useRef, useState, ChangeEvent } from "react";
 import { validationSchemaWish } from "./../../utils/validator";
 import { useFormik } from "formik";
 import { Api } from "@/api/defaultApi";
@@ -15,16 +15,36 @@ const WishListModal: FC<WishListModalProps> = ({
   closeMethod,
   successMethod,
 }) => {
+  const [file, setFile] = useState<File>();
+  const refImage = useRef<HTMLInputElement | null>(null);
+  const handleUploadClick = () => {
+    refImage.current?.click();
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    setFile(e.target.files[0]);
+  };
+
   const formik = useFormik({
     initialValues: {
       name: "",
-      avatarUrl: "",
       description: "",
     },
     validationSchema: validationSchemaWish,
     onSubmit: async (values) => {
       try {
-        const res = await Api().wish.createWishItem(values);
+        const formData = new FormData();
+        if (file) formData.append("avatarUrl", file);
+        console.log(formData);
+        const newWish = Object.keys(values).reduce((acc, key) => {
+          console.log(key, values[key as keyof typeof values])
+          acc.append(key, values[key as keyof typeof values]);
+          return acc;
+        }, formData);
+        const res = await Api().wish.createWishItem(newWish);
         successMethod(res);
       } catch (err) {
         console.log(err);
@@ -54,6 +74,16 @@ const WishListModal: FC<WishListModalProps> = ({
               handleBlur={formik.handleBlur}
             />
           ))}
+          <button onClick={handleUploadClick} type="button">
+            {file ? `${file.name}` : "Click to select"}
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            ref={refImage}
+            onChange={handleFileChange}
+            className="hidden"
+          />
         </div>
         <DefaultButtonSection handleClose={closeMethod} />
       </form>

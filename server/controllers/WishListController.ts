@@ -3,11 +3,12 @@ import WishListModel from "../models/WishListModel";
 
 type WishRquest = Request & { userId: string };
 export const createWish = async (req: WishRquest, res: Response) => {
+  console.log(req.body);
   try {
     const newWish = new WishListModel({
       user: req.userId,
       name: req.body.name,
-      avatarUrl: req.body.avatarUrl,
+      avatarUrl: `static${req.route.path}/${req.userId}/${req.file.filename}`,
       description: req.body.description,
     });
     const { _doc } = await newWish.save();

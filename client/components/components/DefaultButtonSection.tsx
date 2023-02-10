@@ -12,7 +12,7 @@ const DefaultButtonSection: FC<DefaultButtonSectionProps> = ({
   labelClose = "Отменить",
 }) => {
   return (
-    <div className="p-2 flex justify-between">
+    <div className="mt-2 p-2 flex justify-between">
       <ButtonTemplate type="submit">{labelSubmit}</ButtonTemplate>
       <ButtonTemplate onClick={handleClose}>{labelClose}</ButtonTemplate>
     </div>

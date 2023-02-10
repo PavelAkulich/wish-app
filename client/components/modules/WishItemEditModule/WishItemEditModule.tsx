@@ -1,7 +1,6 @@
-import { FC } from "react";
+import { FC, useState, useRef, ChangeEvent } from "react";
 import { IWishResponse } from "@/types/WishListTypes";
 import DefaultContainer from "@/components/UI/DefaultContainer";
-import ButtonTemplate from "@/components/UI/ButtonTemplate";
 import DefaultFormInput from "@/components/components/DefaultFormInput";
 import { wishFormInput } from "./utils/wishEdit.constants";
 import DefaultButtonSection from "@/components/components/DefaultButtonSection";
@@ -16,6 +15,19 @@ type WishItemEditModuleProps = {
 
 const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
   const router = useRouter();
+  const [file, setFile] = useState<File>();
+  const refImage = useRef<HTMLInputElement | null>(null);
+  const handleUploadClick = () => {
+    refImage.current?.click();
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) {
+      return;
+    }
+    setFile(e.target.files[0]);
+  };
+
   const revoke = () => {
     router.replace(`/wish-list/${wishItem._id}`);
   };
@@ -23,13 +35,19 @@ const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
   const formik = useFormik({
     initialValues: {
       name: wishItem.name || "",
-      avatarUrl: wishItem.avatarUrl || "",
       description: wishItem.description || "",
     },
     validationSchema: validationSchemaWish,
     onSubmit: async (values) => {
       try {
-        await Api().wish.updateWishItem(values, wishItem._id);
+        const formData = new FormData();
+        if (file) formData.append("avatarUrl", file);
+        const newWish = Object.keys(values).reduce((acc, key) => {
+          console.log(key, values[key as keyof typeof values]);
+          acc.append(key, values[key as keyof typeof values]);
+          return acc;
+        }, formData);
+        const res = await Api().wish.createWishItem(newWish);
       } catch (err) {
         console.log(err);
       } finally {
@@ -65,6 +83,16 @@ const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
                 handleBlur={formik.handleBlur}
               />
             ))}
+            <button onClick={handleUploadClick} type="button">
+              {file ? `${file.name}` : "Click to select"}
+            </button>
+            <input
+              type="file"
+              accept="image/*"
+              ref={refImage}
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
           <DefaultButtonSection handleClose={revoke} />
         </form>

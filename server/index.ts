@@ -8,6 +8,7 @@ import {
   registerValidation,
 } from "./validators/userValidators";
 import handleValidationErrors from "./utils/handleValidationErrors";
+import fileSaver from "./utils/fileSaver";
 import checkAuth from "./utils/checkAuth";
 
 ///cors error!!!!!!!!!!!!!!!!!!!!
@@ -24,6 +25,7 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
+app.use("/static", express.static("static"));
 
 app.get("/", (res, req) => req.status(200).send("server work"));
 
@@ -42,9 +44,19 @@ app.post(
 app.get("/auth/me", checkAuth, UserController.getMe);
 
 app.get("/wishList", checkAuth, WishListController.listWish);
-app.post("/wishList", checkAuth, WishListController.createWish);
+app.post(
+  "/wishList",
+  checkAuth,
+  fileSaver.single("avatarUrl"),
+  WishListController.createWish
+);
 app.get("/wishList/:id", checkAuth, WishListController.wishItem);
-app.patch("/wishList/:id", checkAuth, WishListController.wishItemUpdate);
+app.patch(
+  "/wishList/:id",
+  checkAuth,
+  fileSaver.single("avatarUrl"),
+  WishListController.wishItemUpdate
+);
 app.delete("/wishList/:id", checkAuth, WishListController.wishItemDelete);
 
 app.listen(5555, () => {

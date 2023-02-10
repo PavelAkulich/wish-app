@@ -6,11 +6,6 @@ export const wishFormInput = [
   },
   {
     type: 'text',
-    name: 'avatarUrl',
-    label: 'Картинка',
-  },
-  {
-    type: 'text',
     name: 'description',
     label: 'Описание',
   },
