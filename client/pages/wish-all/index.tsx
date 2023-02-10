@@ -11,7 +11,11 @@ type WishList = {
 const WishList: FC<WishList> = ({ wishList }) => {
   return (
     <HeadLayout description="list of wish item (basic CRUD page)">
-      <WishListModule wishList={wishList} title="Список моих записей" />
+      <WishListModule
+        wishList={wishList}
+        title="Список всех видимых записей"
+        isModal={false}
+      />
     </HeadLayout>
   );
 };
@@ -20,7 +24,7 @@ export default WishList;
 
 export const getServerSideProps: GetServerSideProps = async (cxt) => {
   try {
-    const data = await Api(cxt).wish.getWishList();
+    const data = await Api(cxt).wish.getWishListAll();
     return {
       props: { wishList: data },
     };

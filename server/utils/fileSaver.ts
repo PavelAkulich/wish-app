@@ -1,17 +1,18 @@
 import fs from "fs";
-import { Request, Response } from "express";
+import { Request } from "express";
 import multer from "multer";
 
 const storage = multer.diskStorage({
   destination: (req: Request & { userId: string }, __, cb) => {
-    console.log(req);
+    const baseRoute = req.route.path.split('/')[1];
     if (!fs.existsSync(`static/`)) fs.mkdirSync(`static/`);
-    if (!fs.existsSync(`static${req.route.path}`))
-      fs.mkdirSync(`static${req.route.path}`);
-    if (!fs.existsSync(`static${req.route.path}/${req.userId}`)) {
-      fs.mkdirSync(`static${req.route.path}/${req.userId}`);
+    if (!fs.existsSync(`static/${baseRoute}`)){
+      fs.mkdirSync(`static/${baseRoute}`);
     }
-    cb(null, `static${req.route.path}/${req.userId}`);
+    if (!fs.existsSync(`static/${baseRoute}/${req.userId}`)) {
+      fs.mkdirSync(`static/${baseRoute}/${req.userId}`);
+    }
+    cb(null, `static/${baseRoute}/${req.userId}`);
   },
   filename: (_, file, cb) => {
     cb(null, file.originalname);

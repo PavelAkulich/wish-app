@@ -6,6 +6,10 @@ export const WishListApi = (instance: AxiosInstance) => ({
     const { data } = await instance.get<IWishResponse[]>("wishList");
     return data;
   },
+  async getWishListAll() {
+    const { data } = await instance.get<IWishResponse[]>("wishList/all");
+    return data;
+  },
   async getWishItem(id: string) {
     const { data } = await instance.get<IWishResponse>("wishList/" + id);
     return data;

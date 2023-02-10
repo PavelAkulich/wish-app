@@ -3,8 +3,8 @@ import ButtonTemplate from "../UI/ButtonTemplate";
 
 type DefaultCardButtonSectionProps = {
   handleView: () => void;
-  handleUpdate: () => void;
-  handleDelete: () => void;
+  handleUpdate?: () => void;
+  handleDelete?: () => void;
   labelView?: string;
   labelUpdate?: string;
   labelDelete?: string;
@@ -20,8 +20,8 @@ const DefaultCardButtonSection: FC<DefaultCardButtonSectionProps> = ({
   return (
     <div className="mt-2 p-2 flex justify-between">
       <ButtonTemplate onClick={handleView}>{labelView}</ButtonTemplate>
-      <ButtonTemplate onClick={handleUpdate}>{labelUpdate}</ButtonTemplate>
-      <ButtonTemplate onClick={handleDelete}>{labelDelete}</ButtonTemplate>
+      {handleUpdate && <ButtonTemplate onClick={handleUpdate}>{labelUpdate}</ButtonTemplate>}
+      {handleDelete && <ButtonTemplate onClick={handleDelete}>{labelDelete}</ButtonTemplate>}
     </div>
   );
 };

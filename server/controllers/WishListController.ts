@@ -3,13 +3,17 @@ import WishListModel from "../models/WishListModel";
 
 type WishRquest = Request & { userId: string };
 export const createWish = async (req: WishRquest, res: Response) => {
-  console.log(req.body);
+  const baseRoute = req.route.path.split("/")[1];
+  const avatarUrl = req.file
+    ? `static/${baseRoute}/${req.userId}/${req.file.filename}`
+    : undefined;
   try {
     const newWish = new WishListModel({
       user: req.userId,
       name: req.body.name,
-      avatarUrl: `static${req.route.path}/${req.userId}/${req.file.filename}`,
+      avatarUrl,
       description: req.body.description,
+      global: !!req.body.global,
     });
     const { _doc } = await newWish.save();
     const wishItem = await WishListModel.findOne({ _id: _doc._id })
@@ -38,12 +42,42 @@ export const listWish = async (req: WishRquest, res: Response) => {
   }
 };
 
+export const listWishAvalibleMe = async (req: WishRquest, res: Response) => {
+  try {
+    const wishList = await WishListModel.find(
+      {
+        $or: [{ user: req.userId }, { global: true }],
+      },
+      null,
+      { sort: { user: 1 } }
+    )
+      .populate("user", ["fullName", "email", "avatarUrl", "description"])
+      .exec();
+    res.status(200).json(wishList);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось загрузить",
+    });
+  }
+};
+
 export const wishItem = async (req: WishRquest, res: Response) => {
   try {
-    const wishItem = await WishListModel.findOne({
-      _id: req.params.id,
-      user: req.userId,
-    })
+    const wishItem = await WishListModel.findOne(
+      {
+        $or: [
+          {
+            _id: req.params.id,
+            user: req.userId,
+          },
+          {
+            _id: req.params.id,
+            global: true,
+          },
+        ],
+      }
+    )
       .populate("user", ["fullName", "email", "avatarUrl", "description"])
       .exec();
     if (!wishItem) {
@@ -61,6 +95,10 @@ export const wishItem = async (req: WishRquest, res: Response) => {
 
 export const wishItemUpdate = async (req: WishRquest, res: Response) => {
   try {
+    const baseRoue = req.route.path.split("/")[1];
+    const avatarUrl = req.file
+      ? `static/${baseRoue}/${req.userId}/${req.file.filename}`
+      : undefined;
     const wishId = req.params.id;
     await WishListModel.updateOne(
       {
@@ -68,9 +106,10 @@ export const wishItemUpdate = async (req: WishRquest, res: Response) => {
       },
       {
         name: req.body.name,
-        avatarUrl: req.body.avatarUrl,
+        avatarUrl,
         description: req.body.description,
         user: req.userId,
+        global: !!req.body.global,
       }
     );
     res.status(200).json({

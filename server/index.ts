@@ -44,6 +44,7 @@ app.post(
 app.get("/auth/me", checkAuth, UserController.getMe);
 
 app.get("/wishList", checkAuth, WishListController.listWish);
+app.get("/wishList/all", checkAuth, WishListController.listWishAvalibleMe);
 app.post(
   "/wishList",
   checkAuth,

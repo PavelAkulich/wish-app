@@ -2,7 +2,6 @@ import { FC, useState, useRef, ChangeEvent } from "react";
 import { IWishResponse } from "@/types/WishListTypes";
 import DefaultContainer from "@/components/UI/DefaultContainer";
 import DefaultFormInput from "@/components/components/DefaultFormInput";
-import { wishFormInput } from "./utils/wishEdit.constants";
 import DefaultButtonSection from "@/components/components/DefaultButtonSection";
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
@@ -16,6 +15,7 @@ type WishItemEditModuleProps = {
 const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
   const router = useRouter();
   const [file, setFile] = useState<File>();
+  const [global, setGlobal] = useState<boolean>(false);
   const refImage = useRef<HTMLInputElement | null>(null);
   const handleUploadClick = () => {
     refImage.current?.click();
@@ -42,12 +42,13 @@ const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
       try {
         const formData = new FormData();
         if (file) formData.append("avatarUrl", file);
+        if (global) formData.append("global", "true");
         const newWish = Object.keys(values).reduce((acc, key) => {
           console.log(key, values[key as keyof typeof values]);
           acc.append(key, values[key as keyof typeof values]);
           return acc;
         }, formData);
-        const res = await Api().wish.createWishItem(newWish);
+        const res = await Api().wish.updateWishItem(newWish, wishItem._id);
       } catch (err) {
         console.log(err);
       } finally {
@@ -55,7 +56,7 @@ const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
       }
     },
   });
-
+  console.log(wishItem.avatarUrl);
   return (
     <div className="h-full">
       <DefaultContainer
@@ -64,25 +65,60 @@ const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
       >
         <form onSubmit={formik.handleSubmit}>
           <div>
-            {wishFormInput.map((item) => (
-              <DefaultFormInput
-                key={item.name}
-                labelText={item.label}
-                type={item.type}
-                name={item.name}
-                errorText={
-                  formik.errors[item.name as keyof typeof formik.values] &&
-                  formik.touched[item.name as keyof typeof formik.values]
-                    ? `${
-                        formik.errors[item.name as keyof typeof formik.values]
-                      }`
-                    : ""
-                }
-                value={formik.values[item.name as keyof typeof formik.values]}
-                handleChange={formik.handleChange}
-                handleBlur={formik.handleBlur}
+            <DefaultFormInput
+              key={"name"}
+              labelText="Название"
+              name={"name"}
+              type="text"
+              errorText={
+                formik.errors.name && formik.touched.name
+                  ? `${formik.errors.name}`
+                  : ""
+              }
+              value={formik.values.name}
+              handleChange={formik.handleChange}
+              handleBlur={formik.handleBlur}
+            />
+            <DefaultFormInput
+              key={"description"}
+              labelText="Описание"
+              name={"description"}
+              type="text"
+              errorText={
+                formik.errors.description && formik.touched.description
+                  ? `${formik.errors.description}`
+                  : ""
+              }
+              value={formik.values.description}
+              handleChange={formik.handleChange}
+              handleBlur={formik.handleBlur}
+            />
+            <div>
+              <input
+                type="checkbox"
+                value="0"
+                checked={global}
+                name={`global`}
+                onChange={() => {
+                  console.log("checkbox");
+                  console.log(global);
+                  setGlobal((prev) => !prev);
+                  console.log(global);
+                }}
+                id={`global`}
+                className="hidden"
               />
-            ))}
+              <label
+                htmlFor={`global`}
+                className={`w-full px-1 text-center rounded cursor-pointer ${
+                  global
+                    ? "border border-solid border-default bg-default/10 "
+                    : "hover:bg-default/10 border border-solid border-transparent"
+                }`}
+              >
+                Видно всем
+              </label>
+            </div>
             <button onClick={handleUploadClick} type="button">
               {file ? `${file.name}` : "Click to select"}
             </button>

@@ -12,6 +12,11 @@ const WishListSchema: Schema = new Schema<IWish>(
       type: String,
       required: true,
     },
+    global: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     avatarUrl: String,
     description: String,
   },

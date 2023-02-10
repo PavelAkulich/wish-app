@@ -8,9 +8,13 @@ import Image from "next/image";
 
 type WishItemModuleProps = {
   wishItem: IWishResponse;
+  onlyView?: boolean;
 };
 
-const WishItemModule: FC<WishItemModuleProps> = ({ wishItem }) => {
+const WishItemModule: FC<WishItemModuleProps> = ({
+  wishItem,
+  onlyView = false,
+}) => {
   const router = useRouter();
   const src =
     process.env.NODE_ENV === "production"
@@ -19,7 +23,7 @@ const WishItemModule: FC<WishItemModuleProps> = ({ wishItem }) => {
   const editItem = () => {
     router.push(`${wishItem._id}/edit`);
   };
-
+  console.log(onlyView);
   const deleteItem = async () => {
     try {
       await Api().wish.deleteWishItem(wishItem._id);
@@ -41,15 +45,23 @@ const WishItemModule: FC<WishItemModuleProps> = ({ wishItem }) => {
           <div className="w-2/3 text-lg">{wishItem.description}</div>
           {/* <div className="w-1/3 text-lg">{wishItem.avatarUrl}</div> */}
           <div className="w-1/3 text-lg relative">
-            <Image className="object-top object-contain" loader={() => src} src={src} alt={wishItem.name} fill />
+            <Image
+              className="object-top object-contain"
+              loader={() => src}
+              src={src}
+              alt={wishItem.name}
+              fill
+            />
           </div>
         </div>
         <div className="flex px-10 justify-between items-center">
           <div>{`Владелец: ${wishItem.user.fullName}`}</div>
-          <div className="flex gap-10 justify-between">
-            <ButtonTemplate onClick={editItem}>Редактировать</ButtonTemplate>
-            <ButtonTemplate onClick={deleteItem}>Удалить</ButtonTemplate>
-          </div>
+          {!onlyView && (
+            <div className="flex gap-10 justify-between">
+              <ButtonTemplate onClick={editItem}>Редактировать</ButtonTemplate>
+              <ButtonTemplate onClick={deleteItem}>Удалить</ButtonTemplate>
+            </div>
+          )}
         </div>
       </DefaultContainer>
     </div>
