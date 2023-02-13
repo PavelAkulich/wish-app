@@ -11,7 +11,7 @@ type WishList = {
 const WishList: FC<WishList> = ({ wishList }) => {
   return (
     <HeadLayout description="list of wish item (basic CRUD page)">
-      <WishListModule wishList={wishList} title="Список моих записей" />
+      <WishListModule wishList={wishList} title="Список моих записей (отображаются записи с привязкой к текущему пользователю)" />
     </HeadLayout>
   );
 };

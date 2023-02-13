@@ -21,7 +21,10 @@ const Card: FC<CardProps> = ({ title, description, avatar, children }) => {
       classNameInnerContainer="h-full bg-default-bg border border-solid border-default"
     >
       <div className="flex gap-4">
-        <div className="grow">{title}</div>
+        <div className="grow">
+          <div className="font-bold text-xl">{title.toLocaleUpperCase()}</div>
+          <div className="h-[80px] text-sm mt-[10px]">{description}</div>
+        </div>
         {avatar && (
           <div className="w-20 relative">
             <Image
@@ -34,7 +37,6 @@ const Card: FC<CardProps> = ({ title, description, avatar, children }) => {
           </div>
         )}
       </div>
-      <div>{description}</div>
       {children}
     </DefaultContainer>
   );

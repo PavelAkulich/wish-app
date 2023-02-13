@@ -13,7 +13,7 @@ const WishList: FC<WishList> = ({ wishList }) => {
     <HeadLayout description="list of wish item (basic CRUD page)">
       <WishListModule
         wishList={wishList}
-        title="Список всех видимых записей"
+        title="Список всех видимых записей (отображаются записи с привязкой к текущему пользователю + записи помеченные как доступные всем)"
         isModal={false}
       />
     </HeadLayout>

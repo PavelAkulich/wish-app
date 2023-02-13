@@ -4,7 +4,8 @@ import { useFormik } from "formik";
 import { Api } from "@/api/defaultApi";
 import DefaultFormInput from "@/components/components/DefaultFormInput";
 import { IWishResponse } from "@/types/WishListTypes";
-import DefaultButtonSection from "./../../../../components/DefaultButtonSection";
+import DefaultButtonSection from "@/components/components/DefaultButtonSection";
+import ButtonTemplate from "@/components/UI/ButtonTemplate";
 
 type WishListModalProps = {
   closeMethod: () => void;
@@ -38,7 +39,7 @@ const WishListModal: FC<WishListModalProps> = ({
       try {
         const formData = new FormData();
         if (file) formData.append("avatarUrl", file);
-        if (global) formData.append("global", 'true');
+        if (global) formData.append("global", "true");
         const newWish = Object.keys(values).reduce((acc, key) => {
           console.log(key, values[key as keyof typeof values]);
           acc.append(key, values[key as keyof typeof values]);
@@ -57,6 +58,35 @@ const WishListModal: FC<WishListModalProps> = ({
     <div className="px-10 py-5 bg-default-bg rounded-md border border-default min-w-[400px]">
       <form onSubmit={formik.handleSubmit}>
         <div>
+          <div className="flex justify-between">
+            <div className="font-bold text-xl">Новая запись</div>
+            <div>
+              <input
+                type="checkbox"
+                value="0"
+                checked={global}
+                name={`global`}
+                onChange={() => {
+                  console.log("checkbox");
+                  console.log(global);
+                  setGlobal((prev) => !prev);
+                  console.log(global);
+                }}
+                id={`global`}
+                className="hidden"
+              />
+              <label
+                htmlFor={`global`}
+                className={`w-full px-1 text-center rounded cursor-pointer ${
+                  global
+                    ? "border border-solid border-default bg-default/10 "
+                    : "hover:bg-default/10 border border-solid border-transparent"
+                }`}
+              >
+                Видно всем
+              </label>
+            </div>
+          </div>
           <DefaultFormInput
             key={"name"}
             labelText="Название"
@@ -71,6 +101,16 @@ const WishListModal: FC<WishListModalProps> = ({
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
           />
+          <ButtonTemplate onClick={handleUploadClick} type="button">
+            {file ? `${file.name}` : "Выбрать изображение"}
+          </ButtonTemplate>
+          <input
+            type="file"
+            accept="image/*"
+            ref={refImage}
+            onChange={handleFileChange}
+            className="hidden"
+          />
           <DefaultFormInput
             key={"description"}
             labelText="Описание"
@@ -84,42 +124,6 @@ const WishListModal: FC<WishListModalProps> = ({
             value={formik.values.description}
             handleChange={formik.handleChange}
             handleBlur={formik.handleBlur}
-          />
-          <div>
-            <input
-              type="checkbox"
-              value="0"
-              checked={global}
-              name={`global`}
-              onChange={() => {
-                console.log('checkbox');
-                console.log(global);
-                setGlobal((prev) => !prev)
-                console.log(global);
-              }}
-              id={`global`}
-              className="hidden"
-            />
-            <label
-              htmlFor={`global`}
-              className={`w-full px-1 text-center rounded cursor-pointer ${
-                global
-                  ? "border border-solid border-default bg-default/10 "
-                  : "hover:bg-default/10 border border-solid border-transparent"
-              }`}
-            >
-              Видно всем
-            </label>
-          </div>
-          <button onClick={handleUploadClick} type="button">
-            {file ? `${file.name}` : "Click to select"}
-          </button>
-          <input
-            type="file"
-            accept="image/*"
-            ref={refImage}
-            onChange={handleFileChange}
-            className="hidden"
           />
         </div>
         <DefaultButtonSection handleClose={closeMethod} />

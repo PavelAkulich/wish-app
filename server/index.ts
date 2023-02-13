@@ -42,6 +42,7 @@ app.post(
   UserController.register
 );
 app.get("/auth/me", checkAuth, UserController.getMe);
+app.get("/users", checkAuth, UserController.userList);
 
 app.get("/wishList", checkAuth, WishListController.listWish);
 app.get("/wishList/all", checkAuth, WishListController.listWishAvalibleMe);

@@ -40,7 +40,7 @@ const WishItemModule: FC<WishItemModuleProps> = ({
         classNameOuterContainer="text-default w-full h-full"
         classNameInnerContainer="h-full bg-default-bg border border-solid border-default grid grid-rows-[50px_1fr_50px] py-10"
       >
-        <div className="text-center font-bold text-2xl">{wishItem.name}</div>
+        <div className="text-center font-bold text-2xl">{wishItem.name.toLocaleUpperCase()}</div>
         <div className="flex gap-4 p-10">
           <div className="w-2/3 text-lg">{wishItem.description}</div>
           {/* <div className="w-1/3 text-lg">{wishItem.avatarUrl}</div> */}

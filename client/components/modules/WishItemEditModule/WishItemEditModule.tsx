@@ -15,7 +15,7 @@ type WishItemEditModuleProps = {
 const WishItemEditModule: FC<WishItemEditModuleProps> = ({ wishItem }) => {
   const router = useRouter();
   const [file, setFile] = useState<File>();
-  const [global, setGlobal] = useState<boolean>(false);
+  const [global, setGlobal] = useState<boolean>(wishItem.global || false);
   const refImage = useRef<HTMLInputElement | null>(null);
   const handleUploadClick = () => {
     refImage.current?.click();

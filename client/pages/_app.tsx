@@ -15,7 +15,7 @@ const MyApp = ({ Component, ...rest }: Omit<AppProps, "pageProps">) => {
     <Provider store={store}>
       <div className="w-screen h-screen">
         <AuthLayout>
-          <main className="w-full h-full bg-default-dark">
+          <main className="w-full h-full bg-default-dark pt-10">
             <Component {...props.pageProps} />
           </main>
         </AuthLayout>

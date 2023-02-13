@@ -6,6 +6,7 @@ export interface IWishItem {
   name: string;
   avatarUrl?: string;
   description?: string;
+  global: boolean
 }
 
 export interface IWishResponse {
@@ -14,6 +15,7 @@ export interface IWishResponse {
   avatarUrl?: string | null;
   description?: string | null;
   user: IUserCommonInfo;
+  global: boolean
 }
 
 
@@ -21,4 +23,5 @@ export interface IWishRequest {
   name: string,
   avatarUrl?: string,
   description?: string,
+  global: boolean
 }
